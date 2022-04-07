@@ -1,0 +1,18 @@
+[Unit]
+Description=Learners gunicorn
+After=network.target
+
+[Service]
+Type=notify
+User={{ venjix_user }}
+Environment=VENJIX_AUTH_SECRET={{ venjix_secret }}
+Environment=SCRIPT_DIR={{ venjix_script_dir }}
+RuntimeDirectory=venjix
+WorkingDirectory={{ venjix_basepath }}
+ExecStart={{ flask_service_execstart }}
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+
+[Install]
+WantedBy=multi-user.target

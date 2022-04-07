@@ -1,0 +1,18 @@
+---
+venjix_server_name: venjix.cyberrange.at
+venjix_url: https://{{ venjix_server_name }}
+venjix_secret: "{{ 10 | to_uuid }}"
+
+venjix_pip_version: 0.0.3
+venjix_pip: https://github.com/ait-cs-IaaS/venjix/releases/download/{{ venjix_pip_version }}/venjix-{{ venjix_pip_version }}.tar.gz
+venjix_basepath: "/opt/venjix"
+venjix_script_dir: "{{ venjix_basepath }}/scripts"
+
+venjix_nginx_listen: "80"
+venjix_nginx_listen_ssl: 443 ssl
+venjix_nginx_ssl_cert: ""
+venjix_nginx_ssl_key: ""
+
+venjix_packages:
+  - nginx
+  - python3.8-venv

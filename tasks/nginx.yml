@@ -1,0 +1,18 @@
+---
+- name: Remove default config
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/nginx/sites-enabled/default
+    - /etc/nginx/conf.d
+  become: true
+  notify: restart nginx
+
+- name: Add NGINX configuration file
+  ansible.builtin.template:
+    src: nginx_venjix.conf.j2
+    dest: /etc/nginx/sites-enabled/venjix.conf
+    mode: 0644
+  become: true
+  notify: restart nginx

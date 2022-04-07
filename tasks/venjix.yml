@@ -1,0 +1,56 @@
+---
+- name: Ensure venjix build packages are installed
+  ansible.builtin.package:
+    name: "{{ venjix_packages }}"
+    state: present
+    update_cache: true
+  become: true
+
+- name: create venjix user
+  ansible.builtin.user:
+    name: "{{ venjix_user }}"
+    home: "{{ venjix_basepath }}"
+    create_home: false
+    shell: /usr/sbin/nologin
+  become: true
+
+- name: create venjix_basepath
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ venjix_user }}"
+    group: "{{ venjix_user }}"
+    mode: 0755
+    state: directory
+  with_items: ["{{ venjix_basepath }}", "{{ venjix_script_dir }}"]
+  become: true
+
+- name: Copying service-template to server
+  ansible.builtin.template:
+    src: templates/venjix.service.j2
+    dest: /etc/systemd/system/venjix.service
+    mode: preserve
+  become: true
+
+- name: Install venjix in virtualenv
+  ansible.builtin.pip:
+    name: "{{ venjix_pip }}"
+    virtualenv: "{{ venjix_basepath }}/venv"
+    virtualenv_command: python3 -m venv
+  become: true
+  become_user: "{{ venjix_user }}"
+
+- name: Copy default scripts scriptsdir
+  ansible.builtin.copy:
+    owner: "{{ venjix_user }}"
+    src: "{{ venjix_basepath }}/venv/lib/python3.{{ ansible_python.version.minor }}/site-packages/venjix/scripts/"
+    dest: "{{ venjix_script_dir }}/"
+    remote_src: true
+  become: true
+
+- name: start venjix service
+  ansible.builtin.systemd:
+    name: venjix.service
+    state: started
+    enabled: true
+    daemon_reload: true
+  become: true

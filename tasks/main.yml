@@ -1,0 +1,10 @@
+---
+- name: load default vars
+  ansible.builtin.include_vars: venjix.yml
+
+- name: install venjix
+  ansible.builtin.include_tasks: venjix.yml
+  tags: [venjix]
+- name: configure nginx
+  ansible.builtin.include_tasks: nginx.yml
+  tags: [nginx]

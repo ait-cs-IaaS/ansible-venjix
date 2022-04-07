@@ -1,0 +1,36 @@
+upstream app_server {
+  server unix:{{ venjix_socket_path }};
+}
+
+{% if venjix_nginx_ssl_cert and venjix_nginx_ssl_key %}
+server {
+  listen {{ venjix_nginx_listen }};
+  server_name {{ venjix_server_name }};
+
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}
+{% endif %}
+
+server {
+{% if venjix_nginx_ssl_cert and venjix_nginx_ssl_key %}
+  listen {{ venjix_nginx_listen_ssl }};
+  ssl_certificate     {{ venjix_nginx_ssl_cert }};
+  ssl_certificate_key {{ venjix_nginx_ssl_key }};
+{% else %}
+  listen {{ venjix_nginx_listen }};
+{% endif %}
+
+  server_name {{ venjix_server_name }};
+  root        {{ venjix_wwwroot }};
+
+  location / {
+    proxy_pass http://app_server;
+    include proxy_params;
+  }
+
+  location /static {
+    try_files $uri $uri/ =404;
+  }
+}

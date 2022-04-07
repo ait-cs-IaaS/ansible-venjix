@@ -1,0 +1,14 @@
+---
+flask_app_name: venjix
+
+venjix_user: venjix
+
+venjix_wwwroot: "{{ venjix_basepath }}/webroot/"
+venjix_socket_path: /var/run/venjix/venjix.sock
+
+flask_service_execstart: >
+  {{ venjix_basepath }}/venv/bin/gunicorn
+  --workers 5
+  venjix:app
+  --bind unix:{{ venjix_socket_path }}
+  --pythonpath={{ venjix_basepath }}/venv/lib/python3
