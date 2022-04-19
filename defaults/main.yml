@@ -3,7 +3,7 @@ venjix_server_name: venjix.cyberrange.at
 venjix_url: https://{{ venjix_server_name }}
 venjix_secret: "{{ 10 | to_uuid }}"
 
-venjix_pip_version: 0.0.3
+venjix_pip_version: 0.1.0
 venjix_pip: https://github.com/ait-cs-IaaS/venjix/releases/download/{{ venjix_pip_version }}/venjix-{{ venjix_pip_version }}.tar.gz
 venjix_basepath: "/opt/venjix"
 venjix_script_dir: "{{ venjix_basepath }}/scripts"
